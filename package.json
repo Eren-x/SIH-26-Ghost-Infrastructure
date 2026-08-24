@@ -8,7 +8,7 @@
   "author": "Dipansh Das",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dipanshdas/ghost-rover.git"
+    "url": "git@github.com:Eren-x/SIH-26-Ghost-Infrastructure.git"
   },
   "engines": {
     "node": ">=18"

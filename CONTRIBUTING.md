@@ -6,7 +6,7 @@ Thanks for your interest in improving the Ghost Infrastructure Scout Rover simul
 
 ```bash
 # 1. Clone and install
-git clone https://github.com/dipanshdas/ghost-rover.git
+git clone https://github.com/Eren-x/SIH-26-Ghost-Infrastructure.git
 cd ghost-rover
 npm install && npm install --prefix server && npm install --prefix client
 
