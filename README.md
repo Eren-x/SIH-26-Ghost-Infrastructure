@@ -2,9 +2,9 @@
 
 **Real-time 3D digital twin simulation of an autonomous infrastructure inspection rover.**
 
-Drive a rover through terrain, collect sensor data tied to physical position, detect underground anomalies through multi-sensor correlation, and generate a complete survey risk map — all in your browser.
+Drive a rover across procedural terrain, collect position-tied sensor data, detect underground anomalies through multi-sensor correlation, and generate a complete survey risk map — all in your browser.
 
-![Stack](https://img.shields.io/badge/React-18-61dafb?logo=react) ![Stack](https://img.shields.io/badge/Three.js-R169-000?logo=threedotjs) ![Stack](https://img.shields.io/badge/Node.js-Express-339933?logo=nodedotjs) ![Stack](https://img.shields.io/badge/Socket.IO-Realtime-010101?logo=socketdotio)
+![Stack](https://img.shields.io/badge/React-18-61dafb?logo=react) ![Stack](https://img.shields.io/badge/Three.js-R169-000?logo=threedotjs) ![Stack](https://img.shields.io/badge/Node.js-Express-339933?logo=nodedotjs) ![Stack](https://img.shields.io/badge/Socket.IO-Realtime-010101?logo=socketdotio) [![CI](https://github.com/dipanshdas/ghost-rover/actions/workflows/ci.yml/badge.svg)](https://github.com/dipanshdas/ghost-rover/actions/workflows/ci.yml)
 
 ---
 
@@ -49,6 +49,8 @@ npm run dev
 - **Frontend**: http://localhost:5173
 - **Backend**: http://localhost:3001
 
+Requires Node.js ≥ 18.
+
 ---
 
 ## Controls
@@ -81,7 +83,7 @@ npm run dev
 ```
 3D Rover Simulation (React Three Fiber)
         ↓
-  rover:update (position, heading, speed)
+  rover:update (position, heading, speed)   @ ~10 Hz
         ↓  WebSocket
 Backend Sensor Engine
   → generates readings based on distance to hidden anomaly zones
@@ -98,8 +100,19 @@ Risk Engine
   sensor:telemetry + anomaly:detected
         ↓
 Frontend Visualization
-  → sensor cards, route trail, minimap, anomaly markers, alerts
+  → driver HUD, compass, sensor cards, risk heatmap minimap,
+    route trail, anomaly markers, alerts
 ```
+
+### Rover Physics
+
+The rover uses a **center-of-mass Ackermann kinematic model** (`client/src/three/roverPhysics.js`, pure Node-testable module):
+
+- Bicycle model referenced to the COM (`lf = lr = 1.0`) with slip-angle-corrected velocity direction
+- Ackermann-correct per-wheel steering angles rendered on the front wheels
+- Spring-damper suspension over terrain, plus dynamic brake dive / throttle squat / cornering body roll
+- Slope gravity along the heading — climbs bleed speed, descents add it
+- Soft-slide circle collisions against seeded tree/rock obstacles (`obstacles.js`, shared by renderer + physics so colliders match visuals exactly)
 
 ### Anomaly Detection Rules
 
@@ -111,7 +124,7 @@ Frontend Visualization
 - Humidity z-score > +2.0 **AND**
 - Temperature z-score < −1.5
 
-**Single sensor deviation** → classified as noise, not flagged.
+Each zone fires at most once per survey. Single-sensor deviation is classified as noise.
 
 GPS is metadata only — it never contributes to the risk score.
 
@@ -128,11 +141,22 @@ Sensor influence follows Gaussian falloff — readings change gradually as the r
 
 ---
 
+## On-Screen Instruments
+
+- **Driver HUD** — digital speed readout with slim velocity track, F/N/R gear indicator, throttle/brake trace, steering indicator, functional battery gauge
+- **Compass ribbon** — scrolling heading tape (canvas-driven, zero React re-renders)
+- **Sensor cards** — live value, sparkline history, local mean baseline, z-score with threshold-colored borders
+- **Survey map** — 2D minimap with risk-colored route, accumulated **risk heatmap** (WATCH/INSPECT cells), detected anomalies, live GPS
+- **Event log & status bar** — timestamped detections plus GPS/speed/distance/time/heading/risk readouts
+- **Survey report** — distance, duration, samples, cavity/leak counts, CALM/WATCH/INSPECT breakdown
+
+---
+
 ## Project Structure
 
 ```
 ghost-rover/
-├── package.json                 # Root workspace
+├── package.json                 # Root workspace (npm run dev)
 ├── shared/
 │   ├── constants.js             # Sensor defaults, thresholds, zones, waypoints
 │   └── types.js                 # JSDoc type definitions
@@ -148,33 +172,39 @@ ghost-rover/
 │   │   └── RiskEngine.js        # 0–100 risk scoring
 │   └── websocket/
 │       └── handlers.js          # Event routing + survey lifecycle
-└── client/
-    ├── vite.config.js
-    ├── tailwind.config.js
-    └── src/
-        ├── App.jsx              # Layout + socket event wiring
-        ├── socket.js            # Socket.IO client
-        ├── stores/
-        │   └── useSimStore.js   # Zustand state management
-        ├── three/
-        │   ├── Scene.jsx        # R3F Canvas, lights, fog
-        │   ├── Terrain.jsx      # Procedural terrain + rocks + trees
-        │   ├── Rover.jsx        # 3D rover geometry
-        │   ├── RoverController.jsx  # WASD physics + demo autopilot
-        │   ├── CameraRig.jsx    # Chase / free camera
-        │   ├── RouteTrail.jsx   # Risk-colored route line
-        │   ├── AnomalyMarkers.jsx   # Surface rings + underground reveals
-        │   └── SurveyGrid.jsx  # Engineering grid overlay
-        └── ui/
-            ├── Header.jsx       # Top bar controls
-            ├── SensorPanel.jsx  # Left sidebar
-            ├── SensorCard.jsx   # Sensor value + sparkline + z-score
-            ├── SurveyMap.jsx    # 2D minimap
-            ├── EventLog.jsx     # Scrolling event stream
-            ├── StatusBar.jsx    # GPS, speed, distance, time
-            ├── AnomalyAlert.jsx # Detection overlay
-            ├── SurveyReport.jsx # Survey completion report
-            └── ConfigPanel.jsx  # Configuration drawer
+├── client/
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   └── src/
+│       ├── App.jsx              # Layout + socket event wiring
+│       ├── socket.js            # Socket.IO client
+│       ├── stores/
+│       │   └── useSimStore.js   # Zustand state management
+│       ├── three/
+│       │   ├── Scene.jsx        # R3F Canvas, lights, fog
+│       │   ├── Terrain.jsx      # Procedural terrain + rocks + trees
+│       │   ├── roverPhysics.js  # Pure COM-Ackermann physics (Node-testable)
+│       │   ├── obstacles.js     # Seeded collision circles (render + physics)
+│       │   ├── Rover.jsx        # 3D rover geometry
+│       │   ├── RoverController.jsx  # Input handling + demo autopilot
+│       │   ├── CameraRig.jsx    # Chase / free camera
+│       │   ├── RouteTrail.jsx   # Risk-colored route line
+│       │   ├── AnomalyMarkers.jsx   # Surface rings + underground reveals
+│       │   └── SurveyGrid.jsx   # Engineering grid overlay
+│       └── ui/
+│           ├── Header.jsx       # Top bar controls
+│           ├── DriverHUD.jsx    # Speed/gear/throttle/steer/battery cluster
+│           ├── Compass.jsx      # Scrolling heading tape
+│           ├── ControlsHint.jsx # Collapsible keybinding overlay
+│           ├── SensorPanel.jsx  # Left sidebar
+│           ├── SensorCard.jsx   # Sensor value + sparkline + z-score
+│           ├── SurveyMap.jsx    # 2D minimap + risk heatmap
+│           ├── EventLog.jsx     # Scrolling event stream
+│           ├── StatusBar.jsx    # GPS, speed, distance, time
+│           ├── AnomalyAlert.jsx # Detection overlay
+│           ├── SurveyReport.jsx # Survey completion report
+│           └── ConfigPanel.jsx  # Configuration drawer
+└── .github/workflows/ci.yml     # CI: syntax checks + production build
 ```
 
 ---
@@ -185,10 +215,10 @@ Open the config panel (⚙) to adjust in real time:
 
 | Setting | Range | Default | Effect |
 |---------|-------|---------|--------|
-| Sensor Noise | 0.1–3.0 | 1.0 | Gaussian noise amplitude |
-| Detection Threshold | 0.5–3.0 | 1.0 | z-score trigger sensitivity |
-| Baseline Window | 5–30 | 12 | Rolling sample window size |
-| Rover Max Speed | 2–15 | 8 | Maximum rover speed (units/s) |
+| Sensor Noise | 0.1–3.0 | 1.0 | Scales Gaussian noise amplitude (server-side) |
+| Detection Threshold | 0.5–3.0 | 1.0 | Multiplier on all z-score trigger thresholds (server-side) |
+| Baseline Window | 5–30 | 12 | Rolling sample window size (server-side) |
+| Rover Max Speed | 2–15 | 8 | Maximum forward speed (client-side physics limit) |
 
 Toggle visibility of: route trail, GPS coordinates, underground anomalies, grid, baseline on charts.
 
@@ -204,7 +234,7 @@ Click **DEMO** to auto-pilot the rover along a predefined route that passes thro
 4. Pass Zone C (small cavity) → another detection
 5. Survey completes → final report with stats and risk breakdown
 
-This is designed for live presentations — the entire demo runs automatically in ~60 seconds.
+The demo runs automatically in under a minute — designed for live presentations.
 
 ---
 
@@ -220,6 +250,7 @@ This is designed for live presentations — the entire demo runs automatically i
 | Backend | Node.js + Express |
 | Real-time Communication | Socket.IO |
 | Sensor Processing | Custom spatial baseline engine |
+| Rover Physics | Custom COM-Ackermann kinematics module |
 
 ---
 
@@ -239,14 +270,18 @@ The detection backend is designed so that when the physical rover is built, the 
 ```
 SIMULATION:                          FUTURE HARDWARE:
 Synthetic Generator                  MPU6050 / DHT22 / MEMS / GPS
-       ↓                                    ↓
+        ↓                                    ↓
 Backend Sensor Engine    ←──────→    ESP32 via Wi-Fi
-       ↓                                    ↓
+        ↓                                    ↓
 Same Detection Pipeline             Same Detection Pipeline
 ```
 
 ---
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
-Prototype / research project. Not intended for production use.
+[MIT](LICENSE)

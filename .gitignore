@@ -1,4 +1,31 @@
+# Dependencies
 node_modules/
+
+# Build output
 client/dist/
+dist/
+build/
+
+# Logs
 *.log
+npm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
 .DS_Store
+Thumbs.db
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# Misc
+*.swp
+*.swo
