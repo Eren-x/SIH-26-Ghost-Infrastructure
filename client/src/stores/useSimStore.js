@@ -9,7 +9,12 @@ const useSimStore = create((set) => ({
   roverHeading: 0,
   roverSpeed: 0,
   roverDistance: 0,
-  
+  inputThrottle: 0,   // +1 fwd / -1 rev (raw input)
+  inputSteer: 0,      // +1 left / -1 right
+
+  // Battery (%)
+  battery: 100,
+
   // Survey
   surveyState: 'idle',  // 'idle' | 'active' | 'complete'
   surveyTime: 0,
@@ -61,6 +66,12 @@ const useSimStore = create((set) => ({
     roverHeading: state.heading,
     roverSpeed: state.speed,
     roverDistance: state.distance,
+    inputThrottle: state.throttle ?? s.inputThrottle,
+    inputSteer: state.steerInput ?? s.inputSteer,
+  })),
+
+  drainBattery: (amount) => set((s) => ({
+    battery: Math.max(0, s.battery - amount),
   })),
   
   setSurveyTime: (time) => set({ surveyTime: time }),
@@ -120,6 +131,9 @@ const useSimStore = create((set) => ({
     roverHeading: 0,
     roverSpeed: 0,
     roverDistance: 0,
+    inputThrottle: 0,
+    inputSteer: 0,
+    battery: 100,
     surveyState: 'idle',
     surveyTime: 0,
     surveyStats: null,

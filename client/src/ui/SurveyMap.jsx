@@ -1,6 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import useSimStore from '../stores/useSimStore';
 
+const HEAT_CELL = 4;          // world units per heatmap cell
+const HEAT_ALPHA_BASE = 0.12;
+const HEAT_ALPHA_PER = 0.15;
+const HEAT_MAX_WEIGHT = 3;    // weight at which a cell saturates red
+
 export default function SurveyMap() {
   const canvasRef = useRef(null);
   const routePoints = useSimStore(s => s.routePoints);
@@ -8,6 +13,21 @@ export default function SurveyMap() {
   const roverPos = useSimStore(s => s.roverPosition);
   const roverHeading = useSimStore(s => s.roverHeading);
   const gps = useSimStore(s => s.gps);
+  const surveyState = useSimStore(s => s.surveyState);
+
+  // Risk heatmap: cell key "cx,cz" → accumulated risk weight (1=WATCH, 2=INSPECT)
+  const heatRef = useRef(new Map());
+  const processedPoints = useRef(0);
+  const prevSurveyState = useRef('idle');
+
+  useEffect(() => {
+    // Clear heatmap on survey reset/idle
+    if (surveyState === 'idle' && prevSurveyState.current !== 'idle') {
+      heatRef.current.clear();
+      processedPoints.current = 0;
+    }
+    prevSurveyState.current = surveyState;
+  }, [surveyState]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -15,7 +35,7 @@ export default function SurveyMap() {
     const ctx = canvas.getContext('2d');
     const w = canvas.width;
     const h = canvas.height;
-    
+
     ctx.fillStyle = '#0f1419';
     ctx.fillRect(0, 0, w, h);
     
@@ -35,6 +55,31 @@ export default function SurveyMap() {
     // Transform coordinates: origin at center
     const toCanvasX = (x) => (x + 100) * scale;
     const toCanvasY = (z) => (z + 100) * scale;
+
+    // ── Accumulate new route points into the heatmap ──
+    const heat = heatRef.current;
+    // Defensive resync if the capped store array was trimmed
+    if (processedPoints.current > routePoints.length) processedPoints.current = routePoints.length;
+    for (; processedPoints.current < routePoints.length; processedPoints.current++) {
+      const p = routePoints[processedPoints.current];
+      const weight = p.risk === 'INSPECT' ? 2 : p.risk === 'WATCH' ? 1 : 0;
+      if (weight > 0) {
+        const key = `${Math.floor(p.x / HEAT_CELL)},${Math.floor(p.z / HEAT_CELL)}`;
+        heat.set(key, Math.min((heat.get(key) || 0) + weight, HEAT_MAX_WEIGHT));
+      }
+    }
+
+    // ── Draw heatmap cells (under route) ──
+    heat.forEach((weight, key) => {
+      const [cx, cz] = key.split(',').map(Number);
+      const wx = cx * HEAT_CELL;
+      const wz = cz * HEAT_CELL;
+      const saturated = weight >= HEAT_MAX_WEIGHT;
+      ctx.fillStyle = saturated ? '#ef4444' : '#eab308';
+      ctx.globalAlpha = Math.min(0.55, HEAT_ALPHA_BASE + HEAT_ALPHA_PER * weight);
+      ctx.fillRect(toCanvasX(wx), toCanvasY(wz), HEAT_CELL * scale + 0.5, HEAT_CELL * scale + 0.5);
+    });
+    ctx.globalAlpha = 1;
     
     // Route (color-coded by risk)
     if (routePoints.length > 1) {
@@ -88,11 +133,17 @@ export default function SurveyMap() {
     ctx.font = '10px monospace';
     ctx.fillText(`${gps.lat.toFixed(4)}, ${gps.lng.toFixed(4)}`, toCanvasX(roverPos.x) + 8, toCanvasY(roverPos.z) + 4);
     
-  }, [routePoints, anomalies, roverPos, roverHeading, gps]);
+  }, [routePoints, anomalies, roverPos, roverHeading, gps, surveyState]);
 
   return (
     <div className="w-[300px] bg-[#121820] border-l border-[#1a202c] p-3 flex flex-col">
-      <div className="text-xs font-mono uppercase tracking-wider text-gray-500 mb-2">SURVEY MAP</div>
+      <div className="flex justify-between items-center mb-2">
+        <div className="text-xs font-mono uppercase tracking-wider text-gray-500">SURVEY MAP</div>
+        <div className="flex items-center gap-2 text-[8px] font-mono uppercase text-gray-600">
+          <span className="inline-block w-2 h-2 rounded-sm bg-[#eab308]/60" /> watch
+          <span className="inline-block w-2 h-2 rounded-sm bg-[#ef4444]/70" /> inspect
+        </div>
+      </div>
       <div className="flex-1 min-h-0 relative">
         <canvas ref={canvasRef} width={274} height={274} className="w-full h-full object-contain rounded bg-[#0f1419]" />
       </div>

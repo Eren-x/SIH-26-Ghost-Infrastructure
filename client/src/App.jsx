@@ -8,6 +8,9 @@ import StatusBar from './ui/StatusBar';
 import AnomalyAlert from './ui/AnomalyAlert';
 import SurveyReport from './ui/SurveyReport';
 import ConfigPanel from './ui/ConfigPanel';
+import DriverHUD from './ui/DriverHUD';
+import Compass from './ui/Compass';
+import ControlsHint from './ui/ControlsHint';
 import useSimStore from './stores/useSimStore';
 import { socket } from './socket';
 
@@ -69,6 +72,9 @@ export default function App() {
         <SensorPanel />
         <div className="flex-1 relative">
           <Scene />
+          <Compass />
+          <DriverHUD />
+          <ControlsHint />
           <AnomalyAlert />
           {surveyState === 'complete' && <SurveyReport />}
         </div>

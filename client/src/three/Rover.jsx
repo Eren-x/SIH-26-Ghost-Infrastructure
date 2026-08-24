@@ -16,13 +16,13 @@ const Rover = forwardRef(({ wheelDataRef, statusColor = '#00ff00' }, ref) => {
   // Update wheel rotations imperatively at 60fps
   useFrame(() => {
     if (!wheelDataRef?.current) return;
-    const { wheelRotation, steerAngle } = wheelDataRef.current;
+    const { wheelRotation, steerAngles } = wheelDataRef.current;
 
     for (let i = 0; i < 4; i++) {
-      // Steering: only front wheels (indices 0, 1)
+      // Steering: front wheels only (indices 0, 1), Ackermann-correct per wheel
       const steerGroup = steerGroupRefs.current[i];
       if (steerGroup) {
-        steerGroup.rotation.y = i < 2 ? steerAngle : 0;
+        steerGroup.rotation.y = i < 2 ? (steerAngles?.[i] ?? 0) : 0;
       }
       // Spin: all wheels
       const spinGroup = spinGroupRefs.current[i];
