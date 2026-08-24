@@ -1,0 +1,13 @@
+{
+  "name": "ghost-rover",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server/server.js",
+    "client": "npm run --prefix client dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
