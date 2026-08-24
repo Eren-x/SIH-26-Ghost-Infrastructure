@@ -52,7 +52,13 @@ export default function App() {
     socket.on('survey:reset', () => {
       useSimStore.getState().resetSurvey();
     });
-    
+
+    // Shareable demo link: /?demo=1 auto-starts the survey + autopilot
+    if (new URLSearchParams(window.location.search).get('demo') === '1') {
+      useSimStore.getState().setDemoMode(true);
+      socket.emit('survey:start');
+    }
+
     return () => {
       socket.off('sensor:telemetry');
       socket.off('anomaly:detected');
