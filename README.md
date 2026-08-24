@@ -6,6 +6,8 @@ Drive a rover across procedural terrain, collect position-tied sensor data, dete
 
 ![Stack](https://img.shields.io/badge/React-18-61dafb?logo=react) ![Stack](https://img.shields.io/badge/Three.js-R169-000?logo=threedotjs) ![Stack](https://img.shields.io/badge/Node.js-Express-339933?logo=nodedotjs) ![Stack](https://img.shields.io/badge/Socket.IO-Realtime-010101?logo=socketdotio) [![CI](https://github.com/Eren-x/SIH-26-Ghost-Infrastructure/actions/workflows/ci.yml/badge.svg)](https://github.com/Eren-x/SIH-26-Ghost-Infrastructure/actions/workflows/ci.yml)
 
+> **🔴 Live demo: [sih-26-ghost-infrastructure-production.up.railway.app](https://sih-26-ghost-infrastructure-production.up.railway.app)**
+
 ---
 
 ## What This Is
