@@ -4,7 +4,7 @@
 
 Drive a rover across procedural terrain, collect position-tied sensor data, detect underground anomalies through multi-sensor correlation, and generate a complete survey risk map — all in your browser.
 
-![Stack](https://img.shields.io/badge/React-18-61dafb?logo=react) ![Stack](https://img.shields.io/badge/Three.js-R169-000?logo=threedotjs) ![Stack](https://img.shields.io/badge/Node.js-Express-339933?logo=nodedotjs) ![Stack](https://img.shields.io/badge/Socket.IO-Realtime-010101?logo=socketdotio) [![CI](https://github.com/dipanshdas/ghost-rover/actions/workflows/ci.yml/badge.svg)](https://github.com/dipanshdas/ghost-rover/actions/workflows/ci.yml)
+![Stack](https://img.shields.io/badge/React-18-61dafb?logo=react) ![Stack](https://img.shields.io/badge/Three.js-R169-000?logo=threedotjs) ![Stack](https://img.shields.io/badge/Node.js-Express-339933?logo=nodedotjs) ![Stack](https://img.shields.io/badge/Socket.IO-Realtime-010101?logo=socketdotio) [![CI](https://github.com/Eren-x/SIH-26-Ghost-Infrastructure/actions/workflows/ci.yml/badge.svg)](https://github.com/Eren-x/SIH-26-Ghost-Infrastructure/actions/workflows/ci.yml)
 
 ---
 
