@@ -11,7 +11,7 @@ const Scene = () => {
   return (
     <div className="w-full h-full relative">
       <Canvas shadows camera={{ position: [0, 15, 20], fov: 55 }}>
-        <fog attach="fog" args={['#1a1a2e', 50, 180]} />
+        <fog attach="fog" args={['#0d1118', 50, 180]} />
         <ambientLight intensity={0.4} />
         <directionalLight 
           position={[50, 50, 25]} 
@@ -24,7 +24,7 @@ const Scene = () => {
           shadow-camera-top={100} 
           shadow-camera-bottom={-100} 
         />
-        <color attach="background" args={['#0a0e14']} />
+        <color attach="background" args={['#090b0e']} />
         <Terrain />
         <RoverController />
         <RouteTrail />

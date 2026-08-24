@@ -5,6 +5,7 @@ import { socket } from '../socket';
 import { DEMO_WAYPOINTS } from '../../../shared/constants.js';
 import { getTerrainHeight } from './Terrain';
 import Rover from './Rover';
+import { OBSTACLES } from './obstacles';
 import {
   PHYSICS,
   createRoverPhysics,
@@ -111,15 +112,18 @@ const RoverController = () => {
         steerInput = result.steerInput;
       }
     } else {
+      // NOTE: heading increase = screen-right (chase camera), so:
+      //   A/left  → steerInput -1 (heading decreases, rover goes screen-left)
+      //   D/right → steerInput +1
       if (keys.current.w || keys.current.up) throttle = 1;
       if (keys.current.s || keys.current.down) throttle = -1;
-      if (keys.current.a || keys.current.left) steerInput = 1;
-      if (keys.current.d || keys.current.right) steerInput = -1;
+      if (keys.current.a || keys.current.left) steerInput = -1;
+      if (keys.current.d || keys.current.right) steerInput = 1;
     }
 
     // ── Physics step ─────────────────────────────────────────────
     const maxFwd = demoMode ? Math.min(DEMO_CRUISE, maxSpeed) : maxSpeed;
-    const out = stepRover(p, { throttle, steerInput }, dt, maxFwd, getTerrainHeight);
+    const out = stepRover(p, { throttle, steerInput }, dt, maxFwd, getTerrainHeight, OBSTACLES);
 
     // ── Imperative Three.js updates (smooth 60fps) ───────────────
     const grp = roverGroupRef.current;

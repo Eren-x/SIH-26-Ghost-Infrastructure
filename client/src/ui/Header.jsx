@@ -31,29 +31,29 @@ export default function Header() {
   };
   
   return (
-    <div className="h-12 bg-[#121820] border-b border-[#1a202c] flex items-center px-4 justify-between">
+    <div className="h-12 bg-[#0e1116] border-b border-[#151920] flex items-center px-4 justify-between">
       <div>
-        <div className="font-bold tracking-wider text-sm uppercase">GHOST INFRASTRUCTURE</div>
-        <div className="text-[10px] text-gray-500 uppercase tracking-widest">SCOUT ROVER</div>
+        <div className="font-bold tracking-wider text-sm uppercase text-gray-300">GHOST INFRASTRUCTURE</div>
+        <div className="text-[10px] text-gray-600 uppercase tracking-widest">SCOUT ROVER</div>
       </div>
       
       <div>
-        {surveyState === 'idle' && <span className="text-xs bg-gray-700 px-2 py-1 rounded text-gray-300">IDLE</span>}
-        {surveyState === 'active' && <span className="text-xs bg-green-900/50 border border-green-500 px-2 py-1 rounded text-green-400 animate-pulse">SCANNING</span>}
-        {surveyState === 'complete' && <span className="text-xs bg-blue-900/50 border border-blue-500 px-2 py-1 rounded text-blue-400">COMPLETE</span>}
+        {surveyState === 'idle' && <span className="text-xs bg-[#151a21] px-2 py-1 rounded text-gray-500">IDLE</span>}
+        {surveyState === 'active' && <span className="text-xs bg-[#121c17] border border-[#2d4438] px-2 py-1 rounded text-[#7da892] animate-pulse">SCANNING</span>}
+        {surveyState === 'complete' && <span className="text-xs bg-[#131922] border border-[#334156] px-2 py-1 rounded text-[#7d93ab]">COMPLETE</span>}
       </div>
       
       <div className="flex gap-2">
         {surveyState === 'idle' ? (
-          <button onClick={handleStart} className="px-3 py-1.5 rounded text-xs font-mono uppercase border border-[#1a202c] hover:bg-[#1a202c] transition text-green-400">START SCAN</button>
+          <button onClick={handleStart} className="px-3 py-1.5 rounded text-xs font-mono uppercase border border-[#1c222b] hover:bg-[#151a21] transition text-[#7da892]">START SCAN</button>
         ) : (
-          <button onClick={handleComplete} className="px-3 py-1.5 rounded text-xs font-mono uppercase border border-[#1a202c] hover:bg-[#1a202c] transition text-yellow-400">COMPLETE SURVEY</button>
+          <button onClick={handleComplete} className="px-3 py-1.5 rounded text-xs font-mono uppercase border border-[#1c222b] hover:bg-[#151a21] transition text-[#b3a37e]">COMPLETE SURVEY</button>
         )}
-        
-        <button onClick={toggleDemo} className={`px-3 py-1.5 rounded text-xs font-mono uppercase border border-[#1a202c] transition ${demoMode ? 'bg-[#1a202c] text-white' : 'hover:bg-[#1a202c]'}`}>DEMO</button>
-        <button onClick={toggleCamera} className="px-3 py-1.5 rounded text-xs font-mono uppercase border border-[#1a202c] hover:bg-[#1a202c] transition">CAM: {cameraMode}</button>
-        <button onClick={handleReset} className="px-3 py-1.5 rounded text-xs font-mono uppercase border border-[#1a202c] hover:bg-[#1a202c] transition">RESET</button>
-        <button onClick={toggleConfig} className="px-3 py-1.5 rounded text-xs font-mono uppercase border border-[#1a202c] hover:bg-[#1a202c] transition">⚙</button>
+
+        <button onClick={toggleDemo} className={`fluid-fast px-3 py-1.5 rounded text-xs font-mono uppercase border border-[#1c222b] transition ${demoMode ? 'bg-[#1a2029] text-gray-300' : 'text-gray-500 hover:bg-[#151a21]'}`}>DEMO</button>
+        <button onClick={toggleCamera} className="fluid-fast px-3 py-1.5 rounded text-xs font-mono uppercase border border-[#1c222b] text-gray-400 hover:bg-[#151a21] transition">CAM: {cameraMode}</button>
+        <button onClick={handleReset} className="fluid-fast px-3 py-1.5 rounded text-xs font-mono uppercase border border-[#1c222b] text-gray-400 hover:bg-[#151a21] transition">RESET</button>
+        <button onClick={toggleConfig} className="fluid-fast px-3 py-1.5 rounded text-xs font-mono uppercase border border-[#1c222b] text-gray-400 hover:bg-[#151a21] transition">⚙</button>
       </div>
     </div>
   );

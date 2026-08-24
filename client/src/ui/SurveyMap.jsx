@@ -36,11 +36,11 @@ export default function SurveyMap() {
     const w = canvas.width;
     const h = canvas.height;
 
-    ctx.fillStyle = '#0f1419';
+    ctx.fillStyle = '#0b0e12';
     ctx.fillRect(0, 0, w, h);
     
     // Grid
-    ctx.strokeStyle = '#1a202c';
+    ctx.strokeStyle = '#141920';
     ctx.lineWidth = 1;
     const gridSize = 20;
     const scale = w / 200; // fit 200 units into canvas
@@ -115,28 +115,28 @@ export default function SurveyMap() {
       ctx.fillText(a.type.toUpperCase(), toCanvasX(ax) + 8, toCanvasY(az) + 3);
     });
     
-    // Rover
+    // Rover — canvas rotate() is clockwise-positive, matching heading increase
     ctx.save();
     ctx.translate(toCanvasX(roverPos.x), toCanvasY(roverPos.z));
-    ctx.rotate(-roverHeading);
+    ctx.rotate(roverHeading);
     ctx.beginPath();
     ctx.moveTo(0, -6);
     ctx.lineTo(4, 4);
     ctx.lineTo(-4, 4);
     ctx.closePath();
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = '#c9d4e0';
     ctx.fill();
     ctx.restore();
     
     // GPS Text next to rover
-    ctx.fillStyle = '#9ca3af';
+    ctx.fillStyle = '#64748b';
     ctx.font = '10px monospace';
     ctx.fillText(`${gps.lat.toFixed(4)}, ${gps.lng.toFixed(4)}`, toCanvasX(roverPos.x) + 8, toCanvasY(roverPos.z) + 4);
     
   }, [routePoints, anomalies, roverPos, roverHeading, gps, surveyState]);
 
   return (
-    <div className="w-[300px] bg-[#121820] border-l border-[#1a202c] p-3 flex flex-col">
+    <div className="w-[300px] bg-[#0e1116] border-l border-[#151920] p-3 flex flex-col">
       <div className="flex justify-between items-center mb-2">
         <div className="text-xs font-mono uppercase tracking-wider text-gray-500">SURVEY MAP</div>
         <div className="flex items-center gap-2 text-[8px] font-mono uppercase text-gray-600">
@@ -145,7 +145,7 @@ export default function SurveyMap() {
         </div>
       </div>
       <div className="flex-1 min-h-0 relative">
-        <canvas ref={canvasRef} width={274} height={274} className="w-full h-full object-contain rounded bg-[#0f1419]" />
+        <canvas ref={canvasRef} width={274} height={274} className="w-full h-full object-contain rounded bg-[#0b0e12]" />
       </div>
       <div className="mt-3">
         <div className="text-xs font-mono text-gray-400">GPS: {gps.lat.toFixed(6)}, {gps.lng.toFixed(6)}</div>

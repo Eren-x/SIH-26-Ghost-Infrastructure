@@ -14,6 +14,7 @@ export const PHYSICS = {
   TRACK_WIDTH: 2.0,
   LF_RATIO: 0.5,           // COM midway between axles → neutral steering
   WHEEL_RADIUS: 0.4,
+  ROVER_RADIUS: 1.0,       // bounding-circle radius for obstacle collisions
 
   // Steering
   MAX_STEER_ANGLE: 0.6,    // ~34° — rovers steer sharply
@@ -85,9 +86,11 @@ export function createRoverPhysics() {
  * @param {number} dt    seconds (clamped by caller)
  * @param {number} maxSpeed  forward speed limit (m/s)
  * @param {(x:number,z:number)=>number} terrain height sampler
+ * @param {Array<{x:number,z:number,r:number}>} [colliders] circle obstacles
  */
-export function stepRover(p, input, dt, maxSpeed, terrain) {
+export function stepRover(p, input, dt, maxSpeed, terrain, colliders) {
   const P = PHYSICS;
+  const ROVER_RADIUS = P.ROVER_RADIUS;
   const absSpeed = Math.abs(p.speed);
   const sinH = Math.sin(p.heading);
   const cosH = Math.cos(p.heading);
@@ -140,6 +143,37 @@ export function stepRover(p, input, dt, maxSpeed, terrain) {
   const velDir = p.heading + p.slipBeta;
   p.x = clamp(p.x + Math.sin(velDir) * p.speed * dt, -95, 95);
   p.z = clamp(p.z + -Math.cos(velDir) * p.speed * dt, -95, 95);
+
+  // ── Obstacle collision — soft slide ────────────────────────────
+  let impact = 0;
+  if (colliders && colliders.length) {
+    for (let i = 0; i < colliders.length; i++) {
+      const o = colliders[i];
+      const dx = p.x - o.x;
+      const dz = p.z - o.z;
+      const minD = o.r + ROVER_RADIUS;
+      const d2 = dx * dx + dz * dz;
+      if (d2 >= minD * minD || d2 < 1e-9) continue;
+
+      const d = Math.sqrt(d2);
+      const nx = dx / d;              // contact normal (obstacle → rover)
+      const nz = dz / d;
+
+      // Push out of penetration
+      p.x = o.x + nx * minD;
+      p.z = o.z + nz * minD;
+
+      // Kill the into-obstacle velocity component (soft slide)
+      const vdx = Math.sin(velDir);
+      const vdz = -Math.cos(velDir);
+      const into = -(vdx * nx + vdz * nz);   // >0 when driving into it
+      if (into > 0) {
+        p.speed *= 1 - Math.min(into, 1) * 0.8;
+        p.slipBeta *= 0.5;
+        impact = Math.max(impact, into);
+      }
+    }
+  }
 
   // ── Ackermann-correct per-wheel angles [FL, FR, RL, RR] ────────
   let fl = 0, fr = 0;
@@ -199,6 +233,7 @@ export function stepRover(p, input, dt, maxSpeed, terrain) {
     distance: p.distance,
     omega,
     slopeAngle,
+    impact,
   };
 }
 

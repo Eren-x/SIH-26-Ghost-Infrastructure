@@ -65,16 +65,16 @@ export default function SensorCard({ sensorKey }) {
   }, [data.history, data.mean, color, config.showBaseline]);
   
   const absZ = Math.abs(data.zScore);
-  let borderClass = 'border-[#1a202c]';
-  if (absZ > 2.5) borderClass = 'border-red-500/50 pulse-red';
-  else if (absZ > 1.5) borderClass = 'border-yellow-500/50 pulse-yellow';
-  
-  let zScoreColor = 'text-green-400';
-  if (absZ > 2) zScoreColor = 'text-red-400';
-  else if (absZ > 1) zScoreColor = 'text-yellow-400';
+  let borderClass = 'border-[#151920]';
+  if (absZ > 2.5) borderClass = 'border-[#5c3a3a] pulse-red';
+  else if (absZ > 1.5) borderClass = 'border-[#55492e] pulse-yellow';
+
+  let zScoreColor = 'text-[#6b8577]';
+  if (absZ > 2) zScoreColor = 'text-[#bd7a72]';
+  else if (absZ > 1) zScoreColor = 'text-[#a89a6b]';
 
   return (
-    <div className={`bg-[#171f2a] rounded-lg p-3 border ${borderClass} transition-colors`}>
+    <div className={`bg-[#12161c] rounded-lg p-3 border ${borderClass} transition-colors`}>
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-2 text-xs font-mono uppercase">
           <span>{icon}</span>
@@ -86,8 +86,8 @@ export default function SensorCard({ sensorKey }) {
       </div>
       
       <div className="mb-2">
-        <span className="text-2xl font-mono font-bold">{data.value.toFixed(2)}</span>
-        <span className="text-sm text-gray-500 ml-1">{SENSOR_DEFAULTS[sensorKey]?.unit ?? ''}</span>
+        <span className="text-2xl font-mono font-medium text-gray-300">{data.value.toFixed(2)}</span>
+        <span className="text-sm text-gray-600 ml-1">{SENSOR_DEFAULTS[sensorKey]?.unit ?? ''}</span>
       </div>
       
       <canvas ref={canvasRef} width={240} height={50} className="w-full h-[50px] rounded bg-black/20" />

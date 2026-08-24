@@ -1,8 +1,9 @@
+// Desaturated sensor identity hues — readable on dark, not neon
 export const SENSOR_COLORS = {
-  vibration: '#f97316',   // orange
-  acoustic: '#8b5cf6',    // purple
-  temperature: '#ef4444', // red
-  humidity: '#3b82f6',    // blue
+  vibration: '#b3815a',   // muted amber
+  acoustic: '#8f86b8',    // dusty violet
+  temperature: '#bd7a72', // muted terracotta
+  humidity: '#7292bd',    // steel blue
 };
 
 export const SENSOR_ICONS = {
@@ -13,7 +14,7 @@ export const SENSOR_ICONS = {
 };
 
 export const RISK_COLORS = {
-  CALM: '#22c55e',
-  WATCH: '#eab308',
-  INSPECT: '#ef4444',
+  CALM: '#4a6b52',
+  WATCH: '#94875f',
+  INSPECT: '#a05f5f',
 };

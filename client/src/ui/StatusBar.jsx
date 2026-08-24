@@ -11,31 +11,31 @@ export default function StatusBar() {
   const risk = useSimStore(s => s.currentRisk);
 
   return (
-    <div className="w-[500px] bg-[#121820] p-3 flex items-center gap-6 overflow-hidden">
+    <div className="w-[500px] bg-[#0e1116] p-3 flex items-center gap-6 overflow-hidden">
       <div className="flex flex-col text-xs font-mono">
         <span className="text-gray-500 uppercase">GPS</span>
-        <span className="text-gray-200">{gps.lat.toFixed(4)}, {gps.lng.toFixed(4)}</span>
+        <span className="text-gray-300">{gps.lat.toFixed(4)}, {gps.lng.toFixed(4)}</span>
       </div>
       <div className="flex flex-col text-xs font-mono">
         <span className="text-gray-500 uppercase">SPD</span>
-        <span className="text-gray-200">{speed.toFixed(1)} m/s</span>
+        <span className="text-gray-300">{speed.toFixed(1)} m/s</span>
       </div>
       <div className="flex flex-col text-xs font-mono">
         <span className="text-gray-500 uppercase">DST</span>
-        <span className="text-gray-200">{formatDistance(distance)}</span>
+        <span className="text-gray-300">{formatDistance(distance)}</span>
       </div>
       <div className="flex flex-col text-xs font-mono">
         <span className="text-gray-500 uppercase">TIME</span>
-        <span className="text-gray-200">{formatTime(surveyTime)}</span>
+        <span className="text-gray-300">{formatTime(surveyTime)}</span>
       </div>
       <div className="flex flex-col text-xs font-mono">
         <span className="text-gray-500 uppercase">HDG</span>
-        <span className="text-gray-200">{(heading * (180/Math.PI)).toFixed(0)}°</span>
+        <span className="text-gray-300">{(heading * (180/Math.PI)).toFixed(0)}°</span>
       </div>
       <div className="flex flex-col text-xs font-mono">
         <span className="text-gray-500 uppercase">RISK</span>
-        <div className="flex items-center gap-1 text-gray-200">
-          <span className={`w-2 h-2 rounded-full ${risk.severity === 'CALM' ? 'bg-green-500' : risk.severity === 'WATCH' ? 'bg-yellow-500' : 'bg-red-500'}`} />
+        <div className="flex items-center gap-1 text-gray-300">
+          <span className={`w-2 h-2 rounded-full ${risk.severity === 'CALM' ? 'bg-[#5f7d64]' : risk.severity === 'WATCH' ? 'bg-[#94875f]' : 'bg-[#a06262]'}`} />
           {risk.riskScore.toFixed(1)}
         </div>
       </div>

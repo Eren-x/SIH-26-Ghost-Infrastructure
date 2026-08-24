@@ -34,7 +34,7 @@ export default function ControlsHint() {
   return (
     <>
       {visible && !dismissed && (
-        <div className="absolute bottom-4 left-4 z-30 bg-[#121820]/90 backdrop-blur border border-[#1a202c] rounded-lg p-3 shadow-2xl slide-in select-none">
+        <div className="absolute bottom-4 left-4 z-30 bg-[#0e1116]/90 backdrop-blur border border-[#151920] rounded-lg p-3 shadow-2xl slide-in select-none">
           <div className="flex justify-between items-center mb-2 gap-6">
             <span className="text-[9px] font-mono uppercase tracking-widest text-gray-500">Drive Controls</span>
             <button onClick={() => { setVisible(false); setDismissed(true); }}
@@ -59,7 +59,7 @@ export default function ControlsHint() {
       {!visible && dismissed && (
         <button
           onClick={() => setVisible(true)}
-          className="absolute bottom-4 left-4 z-30 w-7 h-7 bg-[#121820]/90 backdrop-blur border border-[#1a202c] rounded-full text-gray-400 hover:text-white text-xs shadow-lg"
+          className="absolute bottom-4 left-4 z-30 w-7 h-7 bg-[#0e1116]/90 backdrop-blur border border-[#151920] rounded-full text-gray-400 hover:text-white text-xs shadow-lg"
           title="Show controls"
         >?</button>
       )}

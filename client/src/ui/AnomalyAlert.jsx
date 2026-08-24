@@ -15,8 +15,8 @@ export default function AnomalyAlert() {
   if (!alert) return null;
 
   const isCavity = alert.type === 'cavity';
-  const borderColor = isCavity ? 'border-red-500' : 'border-blue-500';
-  const textColor = isCavity ? 'text-red-400' : 'text-blue-400';
+  const borderColor = isCavity ? 'border-[#7a4545]' : 'border-[#44598a]';
+  const textColor = isCavity ? 'text-[#bd8a85]' : 'text-[#8ba0c9]';
   const typeLabel = isCavity ? 'SUBSURFACE CAVITY' : 'UNDERGROUND LEAK';
 
   // Build contributing sensors from zScores or contributingSensors
@@ -33,14 +33,14 @@ export default function AnomalyAlert() {
     : '—';
 
   return (
-    <div className={`absolute top-4 right-4 z-50 bg-[#171f2a]/95 backdrop-blur border-2 ${borderColor} rounded-xl p-5 w-80 slide-in shadow-2xl cursor-pointer`} onClick={dismiss}>
+    <div className={`absolute top-4 right-4 z-50 bg-[#12161c]/95 backdrop-blur border-2 ${borderColor} rounded-xl p-5 w-80 slide-in shadow-2xl cursor-pointer`} onClick={dismiss}>
       <div className={`text-sm font-bold uppercase mb-1 ${textColor}`}>⚠ ANOMALY DETECTED</div>
       <div className="text-lg font-bold text-white mb-3">{typeLabel}</div>
       
       <div className="flex items-end gap-3 mb-2">
         <div className={`text-4xl font-bold ${textColor}`}>{riskScore}</div>
         <div className={`text-xs px-2 py-0.5 rounded uppercase font-bold mb-1 border ${
-          isCavity ? 'bg-red-900/50 text-red-400 border-red-500/50' : 'bg-blue-900/50 text-blue-400 border-blue-500/50'
+          isCavity ? 'bg-red-900/50 text-[#bd8a85] border-[#7a4545]/50' : 'bg-blue-900/50 text-[#8ba0c9] border-[#44598a]/50'
         }`}>{alert.severity || 'INSPECT'}</div>
       </div>
       

@@ -5,6 +5,9 @@ const WIDTH = 360;
 const HEIGHT = 34;
 const PX_PER_DEG = 3;         // ribbon scroll speed
 const CARDINALS = { 0: 'N', 45: 'NE', 90: 'E', 135: 'SE', 180: 'S', 225: 'SW', 270: 'W', 315: 'NW' };
+const STEEL = '#52657a';
+const STEEL_DIM = '#2a323e';
+const STEEL_BRIGHT = '#9fb3c8';
 
 export default function Compass() {
   const canvasRef = useRef(null);
@@ -19,7 +22,7 @@ export default function Compass() {
       const headingDeg = ((useSimStore.getState().roverHeading * 180 / Math.PI) % 360 + 360) % 360;
 
       ctx.clearRect(0, 0, WIDTH, HEIGHT);
-      ctx.fillStyle = 'rgba(18, 24, 32, 0.85)';
+      ctx.fillStyle = 'rgba(14, 17, 22, 0.85)';
       ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
       // Ticks + labels — center of ribbon is current heading
@@ -31,22 +34,22 @@ export default function Compass() {
         const norm = ((d % 360) + 360) % 360;
         const major = CARDINALS[norm] !== undefined;
 
-        ctx.strokeStyle = major ? '#9ca3af' : '#374151';
-        ctx.lineWidth = major ? 2 : 1;
+        ctx.strokeStyle = major ? '#52657a' : '#232a34';
+        ctx.lineWidth = major ? 1.5 : 1;
         ctx.beginPath();
         ctx.moveTo(x, HEIGHT);
         ctx.lineTo(x, HEIGHT - (major ? 10 : 5));
         ctx.stroke();
 
         if (major) {
-          ctx.fillStyle = norm === 0 ? '#ef4444' : '#d1d5db';
+          ctx.fillStyle = norm === 0 ? '#a06262' : '#8b98a8';
           ctx.font = `${norm % 90 === 0 ? 'bold ' : ''}9px monospace`;
           ctx.fillText(CARDINALS[norm], x, HEIGHT - 14);
         }
       }
 
       // Center marker
-      ctx.fillStyle = '#22d3ee';
+      ctx.fillStyle = STEEL;
       ctx.beginPath();
       ctx.moveTo(WIDTH / 2, HEIGHT - 1);
       ctx.lineTo(WIDTH / 2 - 5, HEIGHT + 4);
@@ -55,12 +58,12 @@ export default function Compass() {
       ctx.fill();
 
       // Heading readout box
-      ctx.fillStyle = 'rgba(34, 211, 238, 0.15)';
+      ctx.fillStyle = 'rgba(125, 147, 171, 0.08)';
       ctx.fillRect(WIDTH / 2 - 26, 0, 52, 13);
-      ctx.strokeStyle = '#22d3ee';
+      ctx.strokeStyle = STEEL_DIM;
       ctx.lineWidth = 1;
       ctx.strokeRect(WIDTH / 2 - 26, 0.5, 52, 13);
-      ctx.fillStyle = '#22d3ee';
+      ctx.fillStyle = STEEL_BRIGHT;
       ctx.font = 'bold 10px monospace';
       ctx.fillText(`${headingDeg.toFixed(0)}°`, WIDTH / 2, 11);
 
@@ -77,7 +80,7 @@ export default function Compass() {
         ref={canvasRef}
         width={WIDTH}
         height={HEIGHT}
-        className="rounded-md border border-[#1a202c] shadow-lg overflow-hidden"
+        className="rounded-md border border-[#151920] shadow-lg overflow-hidden"
         style={{ clipPath: 'inset(0 0 6px 0)' }}
       />
     </div>

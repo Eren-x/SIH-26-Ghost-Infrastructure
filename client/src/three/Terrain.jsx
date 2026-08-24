@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import * as THREE from 'three';
+import { TREES, ROCKS } from './obstacles';
 
 // Simple seeded hash-based noise function
 const hash = (x, y, seed) => {
@@ -79,31 +80,19 @@ const Terrain = () => {
     return geo;
   }, []);
 
-  const rocks = useMemo(() => {
-    const arr = [];
-    for (let i = 0; i < 40; i++) {
-      const x = (Math.random() - 0.5) * 190;
-      const z = (Math.random() - 0.5) * 190;
-      if (x > -8 && x < 8) continue; // Keep road clear
-      const s = 0.3 + Math.random() * 0.7;
-      const y = getTerrainHeight(x, z) + s * 0.5;
-      arr.push({ position: [x, y, z], scale: [s, s, s], rotation: [Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI] });
-    }
-    return arr;
-  }, []);
+  // Obstacles come from the seeded shared module so rendering matches
+  // the physics colliders exactly (see obstacles.js)
+  const rocks = useMemo(() => ROCKS.map(rock => ({
+    position: [rock.x, getTerrainHeight(rock.x, rock.z) + rock.scale * 0.5, rock.z],
+    scale: [rock.scale, rock.scale, rock.scale],
+    rotation: rock.rotation,
+  })), []);
 
-  const trees = useMemo(() => {
-    const arr = [];
-    for (let i = 0; i < 25; i++) {
-      const x = (Math.random() - 0.5) * 190;
-      const z = (Math.random() - 0.5) * 190;
-      if (x > -10 && x < 10) continue; // Keep road clear
-      const y = getTerrainHeight(x, z);
-      const h = 2 + Math.random() * 2;
-      arr.push({ position: [x, y, z], height: h });
-    }
-    return arr;
-  }, []);
+  const trees = useMemo(() => TREES.map(tree => ({
+    position: [tree.x, getTerrainHeight(tree.x, tree.z), tree.z],
+    height: tree.height,
+    rotY: tree.rotY,
+  })), []);
 
   return (
     <group>
@@ -114,19 +103,19 @@ const Terrain = () => {
       {rocks.map((rock, i) => (
         <mesh key={`rock-${i}`} position={rock.position} scale={rock.scale} rotation={rock.rotation} castShadow receiveShadow>
           <icosahedronGeometry args={[1, 0]} />
-          <meshStandardMaterial color="#6a5acd" roughness={0.9} />
+          <meshStandardMaterial color="#5c5470" roughness={0.9} />
         </mesh>
       ))}
 
       {trees.map((tree, i) => (
-        <group key={`tree-${i}`} position={tree.position}>
+        <group key={`tree-${i}`} position={tree.position} rotation={[0, tree.rotY, 0]}>
           <mesh position={[0, tree.height * 0.15, 0]} castShadow>
             <cylinderGeometry args={[0.2, 0.2, tree.height * 0.3]} />
-            <meshStandardMaterial color="#5c4033" />
+            <meshStandardMaterial color="#4a3b30" />
           </mesh>
           <mesh position={[0, tree.height * 0.65, 0]} castShadow>
             <coneGeometry args={[tree.height * 0.4, tree.height * 0.7, 5]} />
-            <meshStandardMaterial color="#228b22" />
+            <meshStandardMaterial color="#2d5a35" />
           </mesh>
         </group>
       ))}

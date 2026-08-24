@@ -19,10 +19,12 @@ const Rover = forwardRef(({ wheelDataRef, statusColor = '#00ff00' }, ref) => {
     const { wheelRotation, steerAngles } = wheelDataRef.current;
 
     for (let i = 0; i < 4; i++) {
-      // Steering: front wheels only (indices 0, 1), Ackermann-correct per wheel
+      // Steering: front wheels only (indices 0, 1), Ackermann-correct per wheel.
+      // Visual Y-angle is negated: kinematic delta>0 turns toward +X, while a
+      // wheel mesh with rotation.y=+δ points toward −X.
       const steerGroup = steerGroupRefs.current[i];
       if (steerGroup) {
-        steerGroup.rotation.y = i < 2 ? (steerAngles?.[i] ?? 0) : 0;
+        steerGroup.rotation.y = i < 2 ? -(steerAngles?.[i] ?? 0) : 0;
       }
       // Spin: all wheels
       const spinGroup = spinGroupRefs.current[i];
@@ -102,8 +104,8 @@ const Rover = forwardRef(({ wheelDataRef, statusColor = '#00ff00' }, ref) => {
       {/* Status LED */}
       <mesh position={[0.5, 1.65, 0.6]}>
         <sphereGeometry args={[0.06]} />
-        <meshStandardMaterial color={statusColor} emissive={statusColor} emissiveIntensity={0.8} />
-        <pointLight color={statusColor} intensity={0.5} distance={2} />
+        <meshStandardMaterial color={statusColor} emissive={statusColor} emissiveIntensity={0.45} />
+        <pointLight color={statusColor} intensity={0.3} distance={2} />
       </mesh>
 
       {/* Power Switch */}

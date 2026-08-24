@@ -5,17 +5,22 @@ export default {
     extend: {
       colors: {
         panel: {
-          900: '#0a0e14',
-          800: '#0f1419',
-          700: '#151b23',
-          600: '#1c2333',
+          900: '#090b0e',
+          800: '#0e1116',
+          700: '#12161c',
+          600: '#171c23',
+        },
+        steel: {
+          DEFAULT: '#7d93ab',
+          dim: '#52657a',
+          bright: '#9fb3c8',
         },
         accent: {
-          green: '#22c55e',
-          yellow: '#eab308',
-          red: '#ef4444',
-          blue: '#3b82f6',
-          cyan: '#06b6d4',
+          green: '#4ade80',
+          yellow: '#facc15',
+          red: '#f87171',
+          blue: '#60a5fa',
+          cyan: '#22d3ee',
         },
       },
       fontFamily: {

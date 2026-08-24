@@ -66,7 +66,7 @@ export default function App() {
   const showConfig = useSimStore(s => s.showConfig);
   
   return (
-    <div className="w-screen h-screen flex flex-col bg-[#0a0e14] text-gray-200 font-sans overflow-hidden">
+    <div className="w-screen h-screen flex flex-col bg-[#090b0e] text-gray-200 font-sans overflow-hidden">
       <Header />
       <div className="flex-1 flex min-h-0">
         <SensorPanel />
@@ -80,7 +80,7 @@ export default function App() {
         </div>
         <SurveyMap />
       </div>
-      <div className="flex border-t border-[#1a202c]">
+      <div className="flex border-t border-[#151920]">
         <EventLog />
         <StatusBar />
       </div>
