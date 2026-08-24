@@ -17,7 +17,9 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node server/server.js",
     "client": "npm run --prefix client dev",
-    "build": "npm run build --prefix client"
+    "build": "npm install --prefix server && npm install --prefix client && npm run build --prefix client",
+    "start": "node server/server.js",
+    "postinstall": "npm install --prefix server"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
